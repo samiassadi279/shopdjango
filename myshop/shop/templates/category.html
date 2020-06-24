@@ -1,0 +1,159 @@
+{% extends 'header.html' %}
+{% load static %}
+
+{% block title %}
+    {% if category %}{{ category.name }}{% else %}Products{% endif %}
+{% endblock %}
+
+{% block content %}
+<!-- semi navbar-->
+<div class="sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <button class=" btn btn-warning navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+<ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+    <div class="row">
+    <div class="col-sm">
+      <div class="fluid-container">
+  <div class="dropdown">
+              <button class="btn btn-warning btn-lg dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 Filter
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="{{ category.get_absolute_url }}">All</a>
+              {% for t in types %}
+                  <a class="dropdown-item" href="{{ t.get_absolute_url }}">{{ t.name }}</a>
+              {% endfor %}
+              </div>
+          </div>
+</div>
+</div>
+<div class="col-sm">
+      <div class="fluid-container">
+  <form class="form-inline" method='get' {% if product_type %} action='/{{ category.slug }}/{{product_type.slug}}'{% else %} action='/{{category.slug}}'{% endif %}>
+      <label class="my-1 mr-2" for="inlineFormCustomSelectPref"></label>
+      <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="price_filter">
+    <option value="1">Relevance</option>
+    <option value="2">Price Low To High</option>
+    <option value="3">Price High To Low</option>
+      </select>
+    <button type="submit" class="btn btn-warning my-1">Submit</button>
+      </form>
+      </div>
+      </div>
+  </li>
+  </ul>
+  <ul class="navbar-nav ml-auto">
+  <li class="nav-item">
+  <form class="form-inline">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">Search</button>
+  </form>
+  </li>
+  </ul>
+  </div>
+  </nav>
+  </div>
+  <!-- dropdown 
+    <div class="col-sm">
+      <div class="fluid-container">
+          <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                 Filter
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="{{ category.get_absolute_url }}">All</a>
+              {% for t in types %}
+                  <a class="dropdown-item" href="{{ t.get_absolute_url }}">{{ t.name }}</a>
+              {% endfor %}
+              </div>
+          </div>
+      </div>
+    </div>
+    <!-- sorting 
+    <div class="col-sm">  
+    <div class="fluid-container" >
+      <form class="form-inline" method='get' {% if product_type %} action='/{{ category.slug }}/{{product_type.slug}}'{% else %} action='/{{category.slug}}'{% endif %}>
+      <label class="my-1 mr-2" for="inlineFormCustomSelectPref"></label>
+      <select class="custom-select my-1 mr-sm-2" id="inlineFormCustomSelectPref" name="price_filter">
+    <option value="1">Relevance</option>
+    <option value="2">Price Low To High</option>
+    <option value="3">Price High To Low</option>
+      </select>
+    <button type="submit" class="btn btn-primary my-1">Submit</button>
+      </form>
+      </div>
+      </div>
+<!-- search 
+    <div class="col-sm">
+    <div class="fluid-container" >
+      <form class="form-inline">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </form>
+    </div>
+  </div>
+</div>-->
+
+<!-- MAIN -->
+
+<div class="container">
+        {% if product_type.slug == None %}
+        <div id="main" style="margin-top:20px;">
+        <h1>{% if product_type %}{{ product_type.name }}{% else %}Products{% endif %}</h1>
+        <div class="row">
+            {% for product in products %}
+              <div class="col-sm-4">
+                    <div class="card">
+                    <a href="{{ product.get_absolute_url }}">
+                            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" class="card-img-top" alt="...">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br></h5>
+                            <p class="card-text">${{ product.price }}</p>
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Details</a>
+                        </div>
+                         <div class="card-body">
+                            <a href="#" class="card-link">Wishlist</a>
+                            <a href="#" class="card-link">Add to cart</a>
+                        </div>
+                        </div>
+                        </div>
+                    {% endfor %} 
+                     </div>
+        </div>  
+        {% else %}
+        <div id="main" style="margin-top:20px;">
+        <h1>{% if product_type %}{{ product_type.name }}{% else %}Products{% endif %}</h1>
+        <div class="row">
+            {% for product in products %}
+                {% if product.product_type.slug == product_type.slug %}
+                    <div class="col-sm-4">
+                    <div class="card">
+                    <a href="{{ product.get_absolute_url }}">
+                            <img src="{% if product.image1 %}{{ product.image1.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" class="card-img-top" alt="...">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a><br></h5>
+                            <p class="card-text">${{ product.price }}</p>
+                            <a href="{{ product.get_absolute_url }}" class="btn btn-primary">Details</a>
+                        </div>
+                         <div class="card-body">
+                            <a href="#" class="card-link">Wishlist</a>
+                            <a href="#" class="card-link">Add to cart</a>
+                        </div>
+                        </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %} 
+                     </div>
+        </div>  
+        {% endif%}
+</div>
+  
+  {% endblock %}
+    

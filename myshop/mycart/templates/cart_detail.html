@@ -1,0 +1,28 @@
+
+{% extends 'header.html' %}
+{% load cart_tag %}
+
+{% block content%}
+
+Total Length :: {{request.session.cart|length}}
+<div class="container">
+Cart Detail::
+{% for key,value in request.session.cart.items %}
+<div class="card mb-3" style="width: 100%;">
+  <div class="row no-gutters">
+    <div class="col-md-4">
+      <img src="{{value.image}}" class="card-img" alt="..." height=100%>
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">{{value.name}}</h5>
+        <p class="card-text">Qty: {{value.quantity}}</p>
+        <p class="card-text">Price: {{value.price}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+  Total {{ value.price|multiply:value.quantity }}
+{% endfor %}
+</div>
+{% endblock%}
